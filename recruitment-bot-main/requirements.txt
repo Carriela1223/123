@@ -46,7 +46,7 @@ multidict==6.0.4
     #   aiohttp
     #   discord-extension-interaction
     #   yarl
-yarl==1.8.2
+yarl==1.8.3
     # via
     #   aiohttp
     #   discord-extension-interaction
