@@ -2,13 +2,24 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 
 class KeepAliveHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def handle_all_requests(self):
+        """UptimeRobot이 어떤 방식(GET, HEAD 등)으로 신호를 보내든 전부 200 OK로 무조건 통과시킵니다."""
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         self.wfile.write("Bot is alive!".encode('utf-8'))
+
+    def do_GET(self):
+        self.handle_all_requests()
+
+    def do_HEAD(self):
+        self.handle_all_requests()
+
+    def do_POST(self):
+        self.handle_all_requests()
+
     def log_message(self, format, *args):
-        return
+        return  # 서버 로그 생략
 
 def run_server():
     server = HTTPServer(('0.0.0.0', 8080), KeepAliveHandler)
@@ -17,13 +28,13 @@ def run_server():
 # 백그라운드 스레드로 간이 웹 서버 기동
 threading.Thread(target=run_server, daemon=True).start()
 
+# ---- 이 아래부터 기존 유저님의 discord 봇 구동 코드를 그대로 두시면 됩니다 ----
 import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import interaction
 from config.log_config import log
 
-# .env 파일에 적어둔 디스코드 토큰값을 컴퓨터 메모리에 로드합니다.
 load_dotenv()
 
 if __name__ == "__main__":
@@ -32,7 +43,6 @@ if __name__ == "__main__":
 
     intent = discord.Intents().all()
     
-    # 💡 guild_ids 대괄호 안에 알려주신 서버 ID 숫자를 정상 주입했습니다.
     client = interaction.Client(
         intents=intent,
         global_sync_command=True,
