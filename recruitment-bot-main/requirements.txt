@@ -50,3 +50,5 @@ yarl==1.8.2
     # via
     #   aiohttp
     #   discord-extension-interaction
+
+python-dotenv
